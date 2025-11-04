@@ -4,6 +4,8 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
-data/
+projects/
+staff/
+projects.json
 .env
 .replit

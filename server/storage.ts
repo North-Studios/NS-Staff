@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import type { StaffMember, Project, EndpointsConfig, ProjectsConfig } from '@shared/schema';
+import type { StaffMember, Project, ProjectsConfig } from '@shared/schema';
 
 export interface IStorage {
   getAllStaff(): Promise<StaffMember[]>;
@@ -20,20 +20,28 @@ class FileStorage implements IStorage {
     if (this.initialized) return;
 
     try {
-      // Load endpoints config
-      const endpointsPath = path.join(process.cwd(), 'data', 'endpoints.json');
-      const endpointsData = await fs.readFile(endpointsPath, 'utf-8');
-      const endpointsConfig: EndpointsConfig = JSON.parse(endpointsData);
+      // Auto-discover staff: scan data/staff/*/values.json
+      const staffRoot = path.join(process.cwd(), 'data', 'staff');
+      let staffDirs: string[] = [];
+      try {
+        const entries = await fs.readdir(staffRoot, { withFileTypes: true });
+        staffDirs = entries.filter((e) => e.isDirectory()).map((e) => e.name);
+      } catch (error) {
+        console.error('Failed to read staff directory:', error);
+        staffDirs = [];
+      }
 
-      // Load all staff members
-      for (const endpoint of endpointsConfig.endpoints) {
+      for (const dirName of staffDirs) {
         try {
-          const staffPath = path.join(process.cwd(), 'data', 'staff', endpoint, 'values.json');
+          const staffPath = path.join(staffRoot, dirName, 'values.json');
           const staffData = await fs.readFile(staffPath, 'utf-8');
           const staff: StaffMember = JSON.parse(staffData);
-          this.staffCache.set(endpoint, staff);
+          // Prefer explicit endpoint from values.json; fallback to directory name
+          const endpointKey = staff.endpoint || dirName;
+          this.staffCache.set(endpointKey, staff);
         } catch (error) {
-          console.error(`Failed to load staff member ${endpoint}:`, error);
+          // Skip directories without valid values.json
+          continue;
         }
       }
 

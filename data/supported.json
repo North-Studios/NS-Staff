@@ -1,0 +1,15 @@
+{
+  "languages": [
+    { "code": "en", "label": "EN" },
+    { "code": "ru", "label": "RU" }
+  ],
+  "countries": [
+    { "code": "RU", "name": "Russia" },
+    { "code": "US", "name": "USA" },
+    { "code": "GB", "name": "United Kingdom" },
+    { "code": "DE", "name": "Germany" },
+    { "code": "FR", "name": "France" },
+    { "code": "KZ", "name": "Kazakhstan" }
+  ]
+}
+
