@@ -11,7 +11,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 
 function getApiKeyFromRequest(req: Request): string | null {
-  const header = req.header("API-Key");
+  const header = req.header("X-API-Key");
   if (!header) return null;
   const match = header.match(/^Bearer\s+(.+)$/i);
   if (match) return match[1].trim();
