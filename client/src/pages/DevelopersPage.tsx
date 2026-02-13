@@ -13,7 +13,7 @@ export default function DevelopersPage() {
   const [search, setSearch] = useState('');
 
   const { data: staffMembers, isLoading } = useQuery<StaffMember[]>({
-    queryKey: ['/api/staff'],
+    queryKey: ['/api/developers'],
   });
 
   const filteredStaff = staffMembers?.filter((staff) => {

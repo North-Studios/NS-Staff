@@ -8,7 +8,9 @@
   },
   "search": {
     "searchStaff": "Поиск сотрудников...",
-    "searchProjects": "Поиск проектов..."
+    "searchProjects": "Поиск проектов...",
+    "searchNews": "Поиск статей...",
+    "noNewsResults": "Статьи по запросу не найдены"
   },
   "sections": {
     "staff": "Сотрудники",
@@ -22,10 +24,17 @@
   "projectCard": {
     "developers": "Разработчики"
   },
+  "siteOverlay": {
+    "email": "ns-staff@example.com",
+    "telegram": "https://t.me/north_studios",
+    "x": "https://x.com/your_profile",
+    "version": "С 2025"
+  },
   "contacts": {
     "email": "Эл. почта",
     "telegram": "Telegram канал",
-    "github": "GitHub"
+    "github": "GitHub",
+    "x": "X"
   },
   "languages": {
     "Russian": "Русский",

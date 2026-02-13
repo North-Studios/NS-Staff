@@ -12,12 +12,12 @@ interface ProjectCardProps {
   accentColor?: string;
 }
 
-export function ProjectCard({ project, size = 'small', accentColor = '#28735d' }: ProjectCardProps) {
+export function ProjectCard({ project, size = 'small', accentColor = '#9e9e9e' }: ProjectCardProps) {
   const { i18n } = useTranslation('common');
   const description = getLocalizedValue(project.description, i18n.language);
 
   const gradientStyle = {
-    background: `linear-gradient(135deg, ${accentColor}10, ${accentColor}05)`,
+    background: `linear-gradient(135deg, ${accentColor}15, ${accentColor}10)`,
     borderColor: `${accentColor}33`,
   };
 

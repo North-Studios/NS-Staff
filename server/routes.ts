@@ -1,7 +1,6 @@
 import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { generateBusinessCard } from "./qr-generator";
 import { promises as fs } from 'fs';
 import path from 'path';
 import { db, DATA_DIR } from "./db";
@@ -39,6 +38,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     debug: process.env.DEBUG === 'true',
   };
 
+  //
+  // Static assets
+  //
+
+  // Serve shared data files (e.g. /data/TEST.png used for test articles)
+  const dataDir = path.join(process.cwd(), "data");
+  app.use("/data", express.static(dataDir));
+
   // Serve supported languages and countries
   app.get('/api/supported', async (_req, res) => {
     try {
@@ -69,38 +76,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await fs.mkdir(uploadsDir, { recursive: true });
   app.use("/uploads", express.static(uploadsDir));
 
-  //
-  // Legacy staff endpoints (kept for backward compatibility with existing frontend)
-  //
-
-  // Get all staff members (legacy)
-  app.get('/api/staff', async (req, res) => {
-    try {
-      const staff = await storage.getAllStaff();
-      res.json(staff);
-    } catch (error) {
-      console.error('Error fetching staff:', error);
-      res.status(500).json({ error: 'Failed to fetch staff members' });
-    }
-  });
-
-  // Get single staff member (legacy)
-  app.get('/api/staff/:endpoint', async (req, res) => {
-    try {
-      const { endpoint } = req.params;
-      const staff = await storage.getStaffByEndpoint(endpoint);
-      
-      if (!staff) {
-        return res.status(404).json({ error: 'Staff member not found' });
-      }
-      
-      res.json(staff);
-    } catch (error) {
-      console.error('Error fetching staff member:', error);
-      res.status(500).json({ error: 'Failed to fetch staff member' });
-    }
-  });
-
   // Get staff photo
   app.get('/api/staff/:endpoint/photo/:num', async (req, res) => {
     try {
@@ -123,41 +98,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching photo:', error);
       res.status(500).json({ error: 'Failed to fetch photo' });
-    }
-  });
-
-  // Generate QR business card
-  app.get('/api/staff/:endpoint/qr/:lang', async (req, res) => {
-    try {
-      const { endpoint, lang } = req.params;
-      const staff = await storage.getStaffByEndpoint(endpoint);
-      
-      if (!staff) {
-        return res.status(404).json({ error: 'Staff member not found' });
-      }
-
-      const photoPath = storage.getStaffPhotoPath(endpoint, 1);
-      
-      // Get the site URL from request
-      const protocol = req.protocol;
-      const host = req.get('host');
-      const siteUrl = `${protocol}://${host}`;
-
-      const cardBuffer = await generateBusinessCard(staff, lang, photoPath, siteUrl);
-      
-      // Get localized name for filename
-      const langKey = lang === 'ru' ? 'ru-RU' : 'en-EN';
-      const displayName = staff.name[langKey] || staff.name['en-EN'] || Object.values(staff.name)[0];
-      const sanitizedName = displayName.replace(/\s+/g, '_').replace(/[^\w\-_.]/g, '');
-      const fileName = `${sanitizedName}_BusinessCard.png`;
-      const encodedFileName = encodeURIComponent(fileName);
-
-      res.setHeader('Content-Type', 'image/png');
-      res.setHeader('Content-Disposition', `attachment; filename="${sanitizedName}_BusinessCard.png"; filename*=UTF-8''${encodedFileName}`);
-      res.send(cardBuffer);
-    } catch (error) {
-      console.error('Error generating QR card:', error);
-      res.status(500).json({ error: 'Failed to generate business card' });
     }
   });
 

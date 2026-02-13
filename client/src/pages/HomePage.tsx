@@ -14,7 +14,7 @@ export default function HomePage() {
   const [projectSearch, setProjectSearch] = useState('');
 
   const { data: staffMembers, isLoading: isLoadingStaff } = useQuery<StaffMember[]>({
-    queryKey: ['/api/staff'],
+    queryKey: ['/api/developers'],
   });
 
   const { data: projects, isLoading: isLoadingProjects } = useQuery<Project[]>({

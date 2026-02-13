@@ -13,17 +13,17 @@ export function PolaroidFan({ staffEndpoint, photoCount = 3 }: PolaroidFanProps)
 
   const getRotation = (index: number, total: number) => {
     if (!isHovered) {
-      const baseRotations = [-8, 0, 8];
+      const baseRotations = [-10, 0, 10];
       return baseRotations[index] || 0;
     }
-    const spread = 15;
+    const spread = 26;
     const center = (total - 1) / 2;
     return (index - center) * spread;
   };
 
   const getTranslateX = (index: number, total: number) => {
     if (!isHovered) return 0;
-    const spacing = 120;
+    const spacing = 170;
     const center = (total - 1) / 2;
     return (index - center) * spacing;
   };
@@ -43,7 +43,13 @@ export function PolaroidFan({ staffEndpoint, photoCount = 3 }: PolaroidFanProps)
           animate={{
             rotate: getRotation(index, photos.length),
             x: getTranslateX(index, photos.length),
-            zIndex: isHovered ? index + 1 : photos.length - index,
+            zIndex: isHovered
+              ? index === Math.floor((photos.length - 1) / 2)
+                ? photos.length + 1
+                : photos.length - Math.abs(
+                    index - Math.floor((photos.length - 1) / 2),
+                  )
+              : photos.length - index,
           }}
           transition={{
             type: "spring",

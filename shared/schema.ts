@@ -17,6 +17,8 @@ export const staffMemberSchema = z.object({
     email: z.string().optional(),
     telegram_channel: z.string().optional(),
     github: z.string().optional(),
+    // X (formerly Twitter)
+    x: z.string().optional(),
   }),
   projects: z.array(z.string()),
   // Kept only for existing JSON-based storage; will be removed when

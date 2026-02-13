@@ -15,6 +15,12 @@ async function main() {
 
   const endpoint = "ovcharenski";
 
+  // Shared banner for all test articles so it's easy to
+  // visually distinguish them from real content.
+  // The file is expected at /data/TEST.png and is served
+  // statically by the Express app.
+  const bannerUrl = "/data/TEST.png";
+
   // Try to reuse localized author name from developers table if it exists
   const devRow = db
     .prepare(
@@ -41,32 +47,40 @@ async function main() {
   };
 
   const summary = {
-    ru: "Краткое описание тестовой статьи.",
-    en: "Short description of the test article.",
+    ru: "Краткое описание тестовой статьи для проверки верстки и контента.",
+    en: "Short test article used to verify layout and content rendering.",
   };
 
   const content = {
     ru: [
       "# Привет из тестовой статьи",
       "",
-      "Это **markdown**‑контент с ссылкой и кодом.",
+      "Это **markdown**‑контент с ссылками, кодом и списками.",
       "",
       "[Markdown Live Preview](https://markdownlivepreview.com/)",
       "",
       "```ts",
       "console.log('hello from test article');",
       "```",
+      "",
+      "- Проверка отображения заголовка",
+      "- Проверка отображения списков",
+      "- Проверка баннера `/data/TEST.png`",
     ].join("\n"),
     en: [
       "# Hello from test article",
       "",
-      "This is **markdown** content with a link and code.",
+      "This is **markdown** content with links, code blocks and lists.",
       "",
       "[Markdown Live Preview](https://markdownlivepreview.com/)",
       "",
       "```ts",
       "console.log('hello from test article');",
       "```",
+      "",
+      "- Check heading rendering",
+      "- Check list rendering",
+      "- Check banner `/data/TEST.png`",
     ].join("\n"),
   };
 
@@ -83,7 +97,7 @@ async function main() {
     JSON.stringify(title),
     JSON.stringify(summary),
     JSON.stringify(content),
-    null, // banner_url
+    bannerUrl, // banner_url
     endpoint,
     JSON.stringify(authorName),
     avatarUrl,
@@ -99,6 +113,7 @@ async function main() {
   console.log(`  GET /api/news/${id}`);
   console.log(`  Author endpoint: ${endpoint}`);
   console.log(`  Author avatarUrl: ${avatarUrl}`);
+  console.log(`  Banner URL: ${bannerUrl}`);
   console.log("");
   console.log("Открой в браузере:");
   console.log(`  /news/${id}`);

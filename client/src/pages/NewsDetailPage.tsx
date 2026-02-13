@@ -7,6 +7,7 @@ import { Loader2, User } from 'lucide-react';
 import { getLocalizedValue, formatPublishedAt } from '@/lib/utils';
 import { MarkdownContent } from '@/components/MarkdownContent';
 import { Badge } from '@/components/ui/badge';
+import { Link } from 'wouter';
 
 export default function NewsDetailPage() {
   const [, params] = useRoute('/news/:id');
@@ -70,9 +71,18 @@ export default function NewsDetailPage() {
                     </div>
                   )}
                   <div className="flex flex-col">
-                    <span className="font-medium">
-                      {authorEndpoint ?? t('news.unknownAuthor', { defaultValue: 'Unknown author' })}
-                    </span>
+                    {authorEndpoint ? (
+                      <Link
+                        href={`/developers/${authorEndpoint}`}
+                        className="font-medium underline-offset-2 hover:underline"
+                      >
+                        {authorEndpoint}
+                      </Link>
+                    ) : (
+                      <span className="font-medium">
+                        {t('news.unknownAuthor', { defaultValue: 'Unknown author' })}
+                      </span>
+                    )}
                   </div>
                 </div>
 

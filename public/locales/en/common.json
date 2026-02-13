@@ -8,7 +8,9 @@
   },
   "search": {
     "searchStaff": "Search staff members...",
-    "searchProjects": "Search projects..."
+    "searchProjects": "Search projects...",
+    "searchNews": "Search articles...",
+    "noNewsResults": "No articles match your query."
   },
   "sections": {
     "staff": "Staff",
@@ -22,10 +24,16 @@
   "projectCard": {
     "developers": "Developers"
   },
+  "siteOverlay": {
+    "email": "ns-staff@example.com",
+    "telegram": "https://t.me/north_studios",
+    "x": "https://x.com/your_profile"
+  },
   "contacts": {
     "email": "Email",
     "telegram": "Telegram Channel",
-    "github": "GitHub"
+    "github": "GitHub",
+    "x": "X"
   },
   "languages": {
     "Russian": "Russian",

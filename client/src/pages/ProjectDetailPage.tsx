@@ -20,7 +20,7 @@ export default function ProjectDetailPage() {
   });
 
   const { data: allStaff } = useQuery<StaffMember[]>({
-    queryKey: ['/api/staff'],
+    queryKey: ['/api/developers'],
   });
 
   if (isLoading || !project) {

@@ -6,7 +6,7 @@ import { PolaroidFan } from '@/components/PolaroidFan';
 import { ProjectCard } from '@/components/ProjectCard';
 import { CountryFlag, LanguageFlag } from '@/lib/countryFlags';
 import type { StaffMember, Project } from '@shared/schema';
-import { Loader2, Mail, Send, Github } from 'lucide-react';
+import { Loader2, Mail, Send, Github, Twitter } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -27,7 +27,7 @@ export default function StaffDetailPage() {
   const endpoint = params?.endpoint;
 
   const { data: staff, isLoading } = useQuery<StaffMember>({
-    queryKey: ['/api/staff', endpoint],
+    queryKey: ['/api/developers', endpoint],
     enabled: !!endpoint,
   });
 
@@ -138,7 +138,10 @@ export default function StaffDetailPage() {
               </div>
 
               {/* Mobile contacts collapsible */}
-              {(staff.contacts.email || staff.contacts.telegram_channel || staff.contacts.github) && (
+              {(staff.contacts.email ||
+                staff.contacts.telegram_channel ||
+                staff.contacts.github ||
+                staff.contacts.x) && (
                 <div className="lg:hidden">
                   <Accordion type="single" collapsible>
                     <AccordionItem value="contacts">
@@ -171,6 +174,20 @@ export default function StaffDetailPage() {
                               </a>
                             </div>
                           )}
+                          {staff.contacts.x && (
+                            <div className="flex items-center gap-3 text-sm">
+                              <Twitter className="w-4 h-4 text-muted-foreground" />
+                              <a
+                                href={staff.contacts.x}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:underline"
+                                data-testid={`contact-x-${staff.endpoint}`}
+                              >
+                                {t('contacts.x', { defaultValue: 'X' })}
+                              </a>
+                            </div>
+                          )}
                         </div>
                       </AccordionContent>
                     </AccordionItem>
@@ -194,7 +211,6 @@ export default function StaffDetailPage() {
                     key={project.endpoint}
                     project={project}
                     size="small"
-                    accentColor={'#28735d'}
                   />
                 ))}
               </div>
