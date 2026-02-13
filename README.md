@@ -1,4 +1,4 @@
-# 🌌 NS Staff v2.1.1
+# 🌌 NS Staff v2.1.2
 
 Catalog of developers, projects, and articles for the NS team – built on top of Express + SQLite backend and a modern React/Tailwind frontend.
 
@@ -173,4 +173,3 @@ The helper script will:
    - Ensure `data/` folder exists and is available.
    - Staff photos are served via `/api/staff/:endpoint/photo/:num`.
    - Shared assets like `TEST.png` are served from `/data/TEST.png`.
-
