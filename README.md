@@ -1,4 +1,4 @@
-# 🌌 NS Staff v2.2.2
+# 🌌 NS Staff v2.2.3
 
 Catalog of developers, projects, and articles for the NS team – built on top of Express + SQLite backend and a modern React/Tailwind frontend.
 
