@@ -23,22 +23,35 @@ export async function apiRequest(
   return res;
 }
 
+const FETCH_TIMEOUT_MS = 15_000;
+
 type UnauthorizedBehavior = "returnNull" | "throw";
 export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
-  async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
-      credentials: "include",
-    });
+  async ({ queryKey, signal }) => {
+    const url = queryKey.join("/") as string;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    signal?.addEventListener("abort", () => controller.abort());
 
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
+    try {
+      const res = await fetch(url, {
+        credentials: "include",
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+        return null;
+      }
+
+      await throwIfResNotOk(res);
+      return await res.json();
+    } finally {
+      clearTimeout(timeoutId);
     }
-
-    await throwIfResNotOk(res);
-    return await res.json();
   };
 
 export const queryClient = new QueryClient({

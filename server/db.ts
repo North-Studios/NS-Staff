@@ -62,7 +62,6 @@ export function migrate() {
       content_json TEXT NOT NULL,
       banner_url TEXT,
       author_endpoint TEXT,
-      author_name_json TEXT,
       author_avatar_url TEXT,
       tags_json TEXT,
       published_at TEXT NOT NULL,

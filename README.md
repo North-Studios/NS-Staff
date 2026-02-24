@@ -1,4 +1,4 @@
-# 🌌 NS Staff v2.2.3
+# 🌌 NS Staff v2.2.4
 
 Catalog of developers, projects, and articles for the NS team – built on top of Express + SQLite backend and a modern React/Tailwind frontend.
 
@@ -34,7 +34,6 @@ NS-Staff/
 │   ├── routes.ts           # REST API for staff, projects, news, uploads
 │   ├── db.ts               # SQLite connection and schema migration
 │   ├── storage.ts          # High-level data access helpers
-│   ├── migrate-json.ts     # One-time migration from legacy JSON storage
 │   ├── create-test-article.ts   # Utility to create demo article via API
 │   ├── create-test-developer.ts # Utility to create demo developer via API
 │   ├── create-test-project.ts   # Utility to create demo project via API
@@ -170,7 +169,6 @@ npm run dev:create-test-article     # Creates article with TEST.png banner, auth
 - `npm run build` – build server and client into `dist/`.
 - `npm start` – run built server in production mode.
 - `npm run check` – TypeScript typecheck.
-- `npm run db:migrate-json` – migrate legacy JSON data into SQLite.
 - `npm run dev:create-test-article` – create a demo article via API (server must be running).
 - `npm run dev:create-test-developer` – create a demo developer via API (server must be running).
 - `npm run dev:create-test-project` – create a demo project via API (server must be running).

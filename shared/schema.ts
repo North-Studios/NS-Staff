@@ -62,7 +62,6 @@ export const articleSchema = z.object({
   author: z
     .object({
       endpoint: z.string(),
-      name: z.record(z.string()),
       avatarUrl: z.string().optional(),
     })
     .optional(),

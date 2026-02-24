@@ -487,9 +487,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const rows = db
         .prepare(
-          `SELECT *
-           FROM news
-           ORDER BY datetime(published_at) DESC`,
+          `SELECT * FROM news ORDER BY datetime(published_at) DESC`,
         )
         .all() as any[];
 
@@ -546,9 +544,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       db.prepare(
         `INSERT INTO news (
           id, title_json, summary_json, content_json, banner_url,
-          author_endpoint, author_name_json, author_avatar_url,
+          author_endpoint, author_avatar_url,
           tags_json, published_at, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       ).run(
         id,
         JSON.stringify(body.title),
@@ -556,7 +554,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         JSON.stringify(body.content),
         body.bannerUrl ?? null,
         author?.endpoint ?? null,
-        author?.name ? JSON.stringify(author.name) : null,
         author?.avatarUrl ?? null,
         JSON.stringify(body.tags ?? []),
         publishedAt,
@@ -605,7 +602,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       db.prepare(
         `UPDATE news
          SET title_json = ?, summary_json = ?, content_json = ?, banner_url = ?,
-             author_endpoint = ?, author_name_json = ?, author_avatar_url = ?,
+             author_endpoint = ?, author_avatar_url = ?,
              tags_json = ?, published_at = ?, updated_at = ?
          WHERE id = ?`,
       ).run(
@@ -614,7 +611,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         JSON.stringify(merged.content),
         merged.bannerUrl ?? null,
         merged.author?.endpoint ?? null,
-        merged.author?.name ? JSON.stringify(merged.author.name) : null,
         merged.author?.avatarUrl ?? null,
         JSON.stringify(merged.tags),
         merged.publishedAt,
@@ -622,7 +618,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         id,
       );
 
-      res.json(merged);
+      const row = db.prepare(`SELECT * FROM news WHERE id = ?`).get(id) as any;
+      res.json(rowToArticle(row));
     } catch (error) {
       console.error('Error updating article:', error);
       res.status(500).json({ error: 'Failed to update article' });
@@ -777,7 +774,6 @@ function rowToArticle(row: any): Article {
     author: row.author_endpoint
       ? {
           endpoint: row.author_endpoint,
-          name: row.author_name_json ? safeParseJsonRecord(row.author_name_json) : {},
           avatarUrl: row.author_avatar_url ?? undefined,
         }
       : undefined,

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useRoute } from 'wouter';
 import { Header } from '@/components/Header';
+import NotFound from '@/pages/not-found';
 import { StaffCard } from '@/components/StaffCard';
 import type { Project, StaffMember } from '@shared/schema';
 import { Loader2 } from 'lucide-react';
@@ -14,7 +15,7 @@ export default function ProjectDetailPage() {
   const { t, i18n } = useTranslation('common');
   const endpoint = params?.endpoint;
 
-  const { data: project, isLoading } = useQuery<Project>({
+  const { data: project, isLoading, isError, isFetched } = useQuery<Project>({
     queryKey: ['/api/projects', endpoint],
     enabled: !!endpoint,
   });
@@ -23,6 +24,7 @@ export default function ProjectDetailPage() {
     queryKey: ['/api/developers'],
   });
 
+  if (isError || (isFetched && !project)) return <NotFound />;
   if (isLoading || !project) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">

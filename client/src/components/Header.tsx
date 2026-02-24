@@ -63,7 +63,7 @@ export function Header({ staff, showCompanyDates }: HeaderProps) {
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-2 hover-elevate active-elevate-2 px-3 py-2 rounded-md cursor-pointer transition-all" data-testid="button-home">
                   <div className="w-8 h-8 rounded-md flex items-center justify-center">
-                    <img src="/favicon.png" alt="Logo" className="w-6 h-6 max-lg:dark:invert" />
+                    <img src="/favicon.png" alt="Logo" className="w-6 h-6" />
                   </div>
                   <span className="font-display font-semibold text-lg">{t('nav.nsStaff')}</span>
                 </div>

@@ -8,3 +8,4 @@ data
 .env
 .replit
 !data/supported.json
+.vscode

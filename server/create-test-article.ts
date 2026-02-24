@@ -14,11 +14,6 @@ async function main() {
   }
   const bannerUrl = uploadResult.data!.url;
 
-  const authorName = {
-    ru: "Овчаренко Михаил",
-    en: "Ovcharenko Michael",
-  };
-
   const title = {
     ru: "Тестовая статья",
     en: "Test article",
@@ -72,7 +67,6 @@ async function main() {
     tags: ["test", "demo"],
     author: {
       endpoint,
-      name: authorName,
       avatarUrl,
     },
   };

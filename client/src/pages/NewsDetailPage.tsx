@@ -8,17 +8,19 @@ import { getLocalizedValue, formatPublishedAt } from '@/lib/utils';
 import { MarkdownContent } from '@/components/MarkdownContent';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'wouter';
+import NotFound from '@/pages/not-found';
 
 export default function NewsDetailPage() {
   const [, params] = useRoute('/news/:id');
   const { t, i18n } = useTranslation('common');
   const id = params?.id;
 
-  const { data: article, isLoading } = useQuery<Article>({
+  const { data: article, isLoading, isError, isFetched } = useQuery<Article>({
     queryKey: ['/api/news', id],
     enabled: !!id,
   });
 
+  if (isError || (isFetched && !article)) return <NotFound />;
   if (isLoading || !article) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useRoute } from 'wouter';
 import { Header } from '@/components/Header';
+import NotFound from '@/pages/not-found';
 import { PolaroidFan } from '@/components/PolaroidFan';
 import { ProjectCard } from '@/components/ProjectCard';
 import { CountryFlag, LanguageFlag } from '@/lib/countryFlags';
@@ -26,7 +27,7 @@ export default function StaffDetailPage() {
   const { t, i18n } = useTranslation('common');
   const endpoint = params?.endpoint;
 
-  const { data: staff, isLoading } = useQuery<StaffMember>({
+  const { data: staff, isLoading, isError, isFetched } = useQuery<StaffMember>({
     queryKey: ['/api/developers', endpoint],
     enabled: !!endpoint,
   });
@@ -35,6 +36,7 @@ export default function StaffDetailPage() {
     queryKey: ['/api/projects'],
   });
 
+  if (isError || (isFetched && !staff)) return <NotFound />;
   if (isLoading || !staff) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">

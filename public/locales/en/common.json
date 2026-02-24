@@ -52,5 +52,9 @@
     "subtitle": "Fresh notes and updates from the team.",
     "empty": "No articles yet.",
     "unknownAuthor": "Unknown author"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or has been moved. Try going back or use the menu above."
   }
 }
