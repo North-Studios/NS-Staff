@@ -20,6 +20,8 @@ export const staffMemberSchema = z.object({
     github: z.string().optional(),
     // X (formerly Twitter)
     x: z.string().optional(),
+    // Varepsilon ID (auth project)
+    vare: z.string().optional(),
   }),
   projects: z.array(z.string()),
   // Kept only for existing JSON-based storage; will be removed when

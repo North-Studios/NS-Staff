@@ -34,7 +34,8 @@
     "email": "Эл. почта",
     "telegram": "Telegram канал",
     "github": "GitHub",
-    "x": "X"
+    "x": "X",
+    "varepsilon": "Varepsilon"
   },
   "languages": {
     "Russian": "Русский",

@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import type { StaffMember } from '@shared/schema';
-import { Mail, Send, Github, Twitter, Menu } from 'lucide-react';
+import { Mail, Send, Github, Twitter, Key, Menu } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -184,6 +184,20 @@ export function Header({ staff, showCompanyDates }: HeaderProps) {
                         data-testid={`link-contact-x-${staff.endpoint}`}
                       >
                         {t('contacts.x', { defaultValue: 'X' })}
+                      </a>
+                    </div>
+                  )}
+                  {staff.contacts.vare && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <Key className="w-4 h-4 text-muted-foreground" />
+                      <a
+                        href={staff.contacts.vare}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-primary transition-colors"
+                        data-testid={`link-contact-vare-${staff.endpoint}`}
+                      >
+                        {t('contacts.varepsilon', { defaultValue: 'Varepsilon' })}
                       </a>
                     </div>
                   )}

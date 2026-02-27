@@ -311,13 +311,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       const now = new Date().toISOString();
+      const newId = body.id ?? existing.id;
 
       db.prepare(
         `UPDATE developers
-         SET name_json = ?, nicknames_json = ?, age = ?, country = ?,
+         SET id = ?, name_json = ?, nicknames_json = ?, age = ?, country = ?,
              languages_json = ?, post = ?, description_json = ?, contacts_json = ?, updated_at = ?
          WHERE endpoint = ?`,
       ).run(
+        newId,
         JSON.stringify(merged.name),
         JSON.stringify(merged.nicknames),
         merged.age,

@@ -110,7 +110,7 @@ npm start
 - API endpoints (see `server/routes.ts`):
   - `GET /api/developers` – list all developers (staff members).
   - `GET /api/developers/:endpoint` – developer details.
-  - `POST /api/developers` – create developer (requires `id` = Telegram ID, `endpoint`, `name`).
+  - `POST /api/developers` – create developer (requires `id` = Varepsilon ID, `endpoint`, `name`).
   - `PUT /api/developers/:endpoint` – update developer.
   - `DELETE /api/developers/:endpoint` – delete developer.
   - `POST /api/staff/:endpoint/photo/:num` – upload developer photo (1–3).

@@ -27,6 +27,7 @@ async function main() {
       telegram_channel: "https://t.me/testdev",
       github: "https://github.com/testdev",
       x: "https://x.com/testdev",
+      vare: "http://varepsilon.local/testdev",
     },
   };
 

@@ -7,7 +7,7 @@ import { PolaroidFan } from '@/components/PolaroidFan';
 import { ProjectCard } from '@/components/ProjectCard';
 import { CountryFlag, LanguageFlag } from '@/lib/countryFlags';
 import type { StaffMember, Project } from '@shared/schema';
-import { Loader2, Mail, Send, Github, Twitter } from 'lucide-react';
+import { Loader2, Mail, Send, Github, Twitter, Key } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -143,7 +143,8 @@ export default function StaffDetailPage() {
               {(staff.contacts.email ||
                 staff.contacts.telegram_channel ||
                 staff.contacts.github ||
-                staff.contacts.x) && (
+                staff.contacts.x ||
+                staff.contacts.vare) && (
                 <div className="lg:hidden">
                   <Accordion type="single" collapsible>
                     <AccordionItem value="contacts">
@@ -187,6 +188,20 @@ export default function StaffDetailPage() {
                                 data-testid={`contact-x-${staff.endpoint}`}
                               >
                                 {t('contacts.x', { defaultValue: 'X' })}
+                              </a>
+                            </div>
+                          )}
+                          {staff.contacts.vare && (
+                            <div className="flex items-center gap-3 text-sm">
+                              <Key className="w-4 h-4 text-muted-foreground" />
+                              <a
+                                href={staff.contacts.vare}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:underline"
+                                data-testid={`contact-vare-${staff.endpoint}`}
+                              >
+                                {t('contacts.varepsilon', { defaultValue: 'Varepsilon' })}
                               </a>
                             </div>
                           )}
