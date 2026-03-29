@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useRoute } from 'wouter';
+import { useEffect } from 'react';
 import { Header } from '@/components/Header';
 import NotFound from '@/pages/not-found';
 import { StaffCard } from '@/components/StaffCard';
@@ -19,6 +20,10 @@ export default function ProjectDetailPage() {
     queryKey: ['/api/projects', endpoint],
     enabled: !!endpoint,
   });
+
+  useEffect(() => {
+    document.title = 'NS Staff Portfolio';
+  }, []);
 
   const { data: allStaff } = useQuery<StaffMember[]>({
     queryKey: ['/api/developers'],

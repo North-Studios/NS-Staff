@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Header } from '@/components/Header';
@@ -10,6 +10,10 @@ import { Loader2 } from 'lucide-react';
 
 export default function HomePage() {
   const { t, i18n } = useTranslation('common');
+
+  useEffect(() => {
+    document.title = 'NS Staff Portfolio';
+  }, []);
   const [staffSearch, setStaffSearch] = useState('');
   const [projectSearch, setProjectSearch] = useState('');
 

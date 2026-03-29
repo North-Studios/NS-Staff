@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useRoute } from 'wouter';
+import { useEffect } from 'react';
 import { Header } from '@/components/Header';
 import NotFound from '@/pages/not-found';
 import { PolaroidFan } from '@/components/PolaroidFan';
@@ -32,6 +33,12 @@ export default function StaffDetailPage() {
     enabled: !!endpoint,
   });
 
+  const displayName = staff ? getLocalizedValue(staff.name, i18n.language) : '';
+
+  useEffect(() => {
+    document.title = 'NS Staff Portfolio';
+  }, []);
+
   const { data: allProjects } = useQuery<Project[]>({
     queryKey: ['/api/projects'],
   });
@@ -45,7 +52,6 @@ export default function StaffDetailPage() {
     );
   }
 
-  const displayName = getLocalizedValue(staff.name, i18n.language);
   const description = getLocalizedValue(staff.description, i18n.language);
   
   const staffProjects =

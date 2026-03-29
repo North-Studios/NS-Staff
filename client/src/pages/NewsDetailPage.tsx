@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useRoute } from 'wouter';
+import { useEffect } from 'react';
 import { Header } from '@/components/Header';
 import type { Article } from '@shared/schema';
 import { Loader2, User } from 'lucide-react';
@@ -20,6 +21,12 @@ export default function NewsDetailPage() {
     enabled: !!id,
   });
 
+  const title = article ? getLocalizedValue(article.title, i18n.language) : '';
+
+  useEffect(() => {
+    document.title = 'NS Staff Portfolio';
+  }, []);
+
   if (isError || (isFetched && !article)) return <NotFound />;
   if (isLoading || !article) {
     return (
@@ -29,7 +36,6 @@ export default function NewsDetailPage() {
     );
   }
 
-  const title = getLocalizedValue(article.title, i18n.language);
   const content = getLocalizedValue(article.content, i18n.language);
   const published = formatPublishedAt(article.publishedAt, i18n.language);
   const authorEndpoint = article.author?.endpoint;

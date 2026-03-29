@@ -2,7 +2,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import type { StaffMember, Project } from "@shared/schema";
+import type { StaffMember, Project, Article } from "@shared/schema";
 import { db } from "./db";
 
 // Определяем __dirname в ES-модуле
@@ -21,6 +21,7 @@ export interface IStorage {
   getProjectByEndpoint(endpoint: string): Promise<Project | undefined>;
   getStaffPhotoPath(endpoint: string, photoNum: number): string;
   getProjectPicturePath(endpoint: string): Promise<string | undefined>;
+  getNewsById(id: string): Promise<Article | undefined>;
 }
 
 class SqliteStorage implements IStorage {
@@ -96,6 +97,30 @@ class SqliteStorage implements IStorage {
     }
 
     return undefined;
+  }
+
+  async getNewsById(id: string): Promise<Article | undefined> {
+    const row = db.prepare(`SELECT * FROM news WHERE id = ?`).get(id) as any | undefined;
+    if (!row) return undefined;
+    return this.rowToArticle(row);
+  }
+
+  private rowToArticle(row: any): Article {
+    return {
+      id: row.id,
+      title: safeParseJsonRecord(row.title_json),
+      summary: safeParseJsonRecord(row.summary_json),
+      content: safeParseJsonRecord(row.content_json),
+      bannerUrl: row.banner_url ?? undefined,
+      publishedAt: row.published_at,
+      tags: safeParseJsonArray(row.tags_json),
+      author: row.author_endpoint
+        ? {
+            endpoint: row.author_endpoint,
+            avatarUrl: row.author_avatar_url ?? undefined,
+          }
+        : undefined,
+    };
   }
 
   private rowToStaff(row: any): StaffMember {

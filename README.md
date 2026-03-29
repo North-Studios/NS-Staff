@@ -1,4 +1,4 @@
-# 🌌 NS Staff v2.3.4
+# 🌌 NS Staff v2.3.5
 
 Catalog of developers, projects, and articles for the NS team – built on top of Express + SQLite backend and a modern React/Tailwind frontend.
 
@@ -11,7 +11,9 @@ Catalog of developers, projects, and articles for the NS team – built on top o
 - **Articles** – news feed with markdown content, banner images, tags, and author linkage.
 - **Search** – fast client-side filtering for staff, projects, and articles.
 - **i18n** – RU/EN translations powered by `react-i18next`.
-- **Single binary backend** – Express server, API, and Vite-built frontend served from one Node process.
+- **Embeds** – dynamic Open Graph & Twitter meta tags for rich link previews in Telegram, Discord, etc.
+- **CORS Support** – enabled for cross-origin requests, facilitating external integration and previews.
+- **Single binary backend** – Express server, API, and Vite-built frontend served from one Node process (with dynamic tab titles).
 
 ---
 
@@ -34,6 +36,7 @@ NS-Staff/
 │   ├── routes.ts           # REST API for staff, projects, news, uploads
 │   ├── db.ts               # SQLite connection and schema migration
 │   ├── storage.ts          # High-level data access helpers
+│   ├── embeds.ts           # Dynamic Open Graph & Twitter meta tags
 │   ├── article-storage.ts  # Markdown content read/write for articles
 │   ├── create-test-article.ts   # Utility to create demo article via API
 │   ├── migrate-articles-to-markdown.ts  # One-time migration: SQL content → files

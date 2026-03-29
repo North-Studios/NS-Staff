@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Header } from '@/components/Header';
@@ -11,6 +11,10 @@ import { getLocalizedValue } from '@/lib/utils';
 export default function DevelopersPage() {
   const { t, i18n } = useTranslation('common');
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    document.title = 'NS Staff Portfolio';
+  }, []);
 
   const { data: staffMembers, isLoading } = useQuery<StaffMember[]>({
     queryKey: ['/api/developers'],

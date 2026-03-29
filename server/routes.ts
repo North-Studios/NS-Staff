@@ -14,6 +14,12 @@ import type { Article, Project, StaffMember } from "@shared/schema";
 import multer from "multer";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import {
+  getNewsMetadata,
+  getDeveloperMetadata,
+  getProjectMetadata,
+} from "./embeds";
+import { log } from "./vite";
 
 function getApiKeyFromRequest(req: Request): string | null {
   const header = req.header("X-API-Key");
@@ -793,6 +799,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
   //
   // Health check (no API key required)
   //
+  //
+  // Frontend routes for meta tag injection (embeds)
+  //
+  
+  // Handler for /news/:id
+  app.get('/news/:id', async (req, res, next) => {
+    try {
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const metaTags = await getNewsMetadata(req.params.id, baseUrl);
+      if (metaTags) {
+        res.locals.metaTags = metaTags;
+        log(`Generated news metadata for ${req.params.id}`, "embeds");
+      }
+    } catch (error) {
+      console.error('Error generating news meta tags:', error);
+    }
+    next();
+  });
+
+  // Handler for /developers/:endpoint
+  app.get('/developers/:endpoint', async (req, res, next) => {
+    try {
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const metaTags = await getDeveloperMetadata(req.params.endpoint, baseUrl);
+      if (metaTags) {
+        res.locals.metaTags = metaTags;
+        log(`Generated developer metadata for ${req.params.endpoint}`, "embeds");
+      }
+    } catch (error) {
+      console.error('Error generating developer meta tags:', error);
+    }
+    next();
+  });
+
+  // Handler for /projects/:endpoint
+  app.get('/projects/:endpoint', async (req, res, next) => {
+    try {
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const metaTags = await getProjectMetadata(req.params.endpoint, baseUrl);
+      if (metaTags) {
+        res.locals.metaTags = metaTags;
+        log(`Generated project metadata for ${req.params.endpoint}`, "embeds");
+      }
+    } catch (error) {
+      console.error('Error generating project meta tags:', error);
+    }
+    next();
+  });
+
   app.get('/api/health', async (_req, res) => {
     try {
       // Read version from package.json

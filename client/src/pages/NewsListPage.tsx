@@ -8,6 +8,7 @@ import { getLocalizedValue, formatPublishedAt } from '@/lib/utils';
 import { Link, useLocation } from 'wouter';
 import { Badge } from '@/components/ui/badge';
 import { SearchInput } from '@/components/SearchInput';
+import { useEffect } from 'react';
 
 export default function NewsListPage() {
   const { t, i18n } = useTranslation('common');
@@ -17,6 +18,10 @@ export default function NewsListPage() {
   const { data: articles, isLoading } = useQuery<Article[]>({
     queryKey: ['/api/news'],
   });
+
+  useEffect(() => {
+    document.title = 'NS Staff Portfolio';
+  }, []);
 
   const filteredArticles = articles?.filter((article) => {
     if (!search) return true;
