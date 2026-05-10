@@ -6,6 +6,9 @@ import { migrate } from "./db";
 
 const app = express();
 
+// One hop (e.g. nginx) terminates TLS; needed so req.protocol reflects https for Open Graph URLs.
+app.set("trust proxy", 1);
+
 declare module 'http' {
   interface IncomingMessage {
     rawBody: unknown
