@@ -29,6 +29,29 @@ function getApiKeyFromRequest(req: Request): string | null {
   return header.trim();
 }
 
+function resolveBaseUrl(req: Request): string {
+  // Highest priority: explicit override via env (e.g. PUBLIC_BASE_URL=https://ns-staff.ovcharenski.ru)
+  const override = process.env.PUBLIC_BASE_URL;
+  if (override) return override.replace(/\/$/, "");
+
+  // Then X-Forwarded-Proto from a trusted reverse proxy.
+  const forwardedProto = (req.headers["x-forwarded-proto"] as string | undefined)
+    ?.split(",")[0]
+    ?.trim();
+
+  // Fallback: req.protocol (works when trust proxy is set), else assume https in production.
+  const protocol =
+    forwardedProto ||
+    (req.protocol === "https"
+      ? "https"
+      : process.env.NODE_ENV === "production"
+        ? "https"
+        : req.protocol);
+
+  const host = (req.headers["x-forwarded-host"] as string | undefined) || req.get("host");
+  return `${protocol}://${host}`;
+}
+
 function requireApiKey(req: Request, res: Response, next: NextFunction) {
   const expected = process.env.API_KEY;
   if (!expected) {
@@ -806,7 +829,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Handler for /news/:id
   app.get('/news/:id', async (req, res, next) => {
     try {
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const baseUrl = resolveBaseUrl(req);
       const metaTags = await getNewsMetadata(req.params.id, baseUrl);
       if (metaTags) {
         res.locals.metaTags = metaTags;
@@ -821,7 +844,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Handler for /developers/:endpoint
   app.get('/developers/:endpoint', async (req, res, next) => {
     try {
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const baseUrl = resolveBaseUrl(req);
       const metaTags = await getDeveloperMetadata(req.params.endpoint, baseUrl);
       if (metaTags) {
         res.locals.metaTags = metaTags;
@@ -836,7 +859,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Handler for /projects/:endpoint
   app.get('/projects/:endpoint', async (req, res, next) => {
     try {
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const baseUrl = resolveBaseUrl(req);
       const metaTags = await getProjectMetadata(req.params.endpoint, baseUrl);
       if (metaTags) {
         res.locals.metaTags = metaTags;
