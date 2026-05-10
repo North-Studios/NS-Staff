@@ -1,6 +1,40 @@
 import type { Article, Project, StaffMember } from "@shared/schema";
 import { storage as sqliteStorage } from "./storage";
 
+const MAX_DESCRIPTION_LENGTH = 300;
+
+function escapeHtmlAttribute(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function stripMarkdown(input: string): string {
+  return input
+    // Images: ![alt](url) -> alt
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    // Links: [text](url) -> text
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    // Inline code, bold, italics, strikethrough markers
+    .replace(/`{1,3}([^`]*)`{1,3}/g, "$1")
+    .replace(/(\*\*|__)(.*?)\1/g, "$2")
+    .replace(/(\*|_)(.*?)\1/g, "$2")
+    .replace(/~~(.*?)~~/g, "$1")
+    // Headings / blockquotes / list markers at line start
+    .replace(/^\s{0,3}(#{1,6}\s+|>\s+|[-*+]\s+|\d+\.\s+)/gm, "");
+}
+
+function sanitizeForMeta(value: string, maxLength = MAX_DESCRIPTION_LENGTH): string {
+  const stripped = stripMarkdown(value);
+  // Collapse all whitespace (including newlines) into single spaces.
+  const collapsed = stripped.replace(/\s+/g, " ").trim();
+  if (collapsed.length <= maxLength) return escapeHtmlAttribute(collapsed);
+  return escapeHtmlAttribute(collapsed.slice(0, maxLength - 1).trimEnd() + "…");
+}
+
 export function generateMetaTags(options: {
   title: string;
   description: string;
@@ -11,21 +45,28 @@ export function generateMetaTags(options: {
 }) {
   const { title, description, image, url, type = "website", siteName = "NS Staff Portfolio" } = options;
 
+  const safeTitle = sanitizeForMeta(title, 150);
+  const safeDescription = sanitizeForMeta(description);
+  const safeUrl = escapeHtmlAttribute(url);
+  const safeType = escapeHtmlAttribute(type);
+  const safeSiteName = escapeHtmlAttribute(siteName);
+
   const tags = [
     `<title>NS Staff Portfolio</title>`,
-    `<meta property="og:site_name" content="${siteName}" />`,
-    `<meta property="og:title" content="${title}" />`,
-    `<meta property="og:description" content="${description}" />`,
-    `<meta property="og:url" content="${url}" />`,
-    `<meta property="og:type" content="${type}" />`,
+    `<meta property="og:site_name" content="${safeSiteName}" />`,
+    `<meta property="og:title" content="${safeTitle}" />`,
+    `<meta property="og:description" content="${safeDescription}" />`,
+    `<meta property="og:url" content="${safeUrl}" />`,
+    `<meta property="og:type" content="${safeType}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
-    `<meta name="twitter:title" content="${title}" />`,
-    `<meta name="twitter:description" content="${description}" />`,
+    `<meta name="twitter:title" content="${safeTitle}" />`,
+    `<meta name="twitter:description" content="${safeDescription}" />`,
   ];
 
   if (image) {
-    tags.push(`<meta property="og:image" content="${image}" />`);
-    tags.push(`<meta name="twitter:image" content="${image}" />`);
+    const safeImage = escapeHtmlAttribute(image);
+    tags.push(`<meta property="og:image" content="${safeImage}" />`);
+    tags.push(`<meta name="twitter:image" content="${safeImage}" />`);
   }
 
   return tags.join("\n    ");
