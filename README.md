@@ -6,9 +6,10 @@ Catalog of developers, projects, and articles for the NS team – built on top o
 
 ## ⭐ Key Features
 
-- **Developers** – detailed profiles with photos, contacts, skills, and linked projects.
+- **Developers** – detailed profiles with polaroid photo fan, contacts, skills, and linked projects.
 - **Projects** – cards styled in the same visual language as staff, with tags and descriptions.
-- **Articles** – news feed with markdown content, banner images, tags, and author linkage.
+- **Articles** – news feed with markdown content, banner images, tags, and author (developer endpoint; avatar from staff photo API).
+- **Image zoom** – click-to-enlarge lightbox with pan/zoom (wheel, buttons, double-click); developer photos open in a polaroid frame; click outside the image to close.
 - **Search** – fast client-side filtering for staff, projects, and articles.
 - **i18n** – RU/EN translations powered by `react-i18next`.
 - **Embeds** – dynamic Open Graph & Twitter meta tags for rich link previews in Telegram, Discord, etc.
@@ -28,7 +29,9 @@ NS-Staff/
 │   │   ├── App.tsx         # Router and app shell
 │   │   ├── main.tsx        # React entry point
 │   │   ├── pages/          # Pages: news, developers, projects, details
-│   │   ├── components/     # UI, header, cards, polaroids, markdown
+│   │   ├── components/     # UI, header, cards, polaroids, markdown, image lightbox
+│   │   │   ├── ImageLightbox.tsx   # Full-screen viewer with zoom/pan
+│   │   │   └── ZoomableImage.tsx   # Clickable images & backgrounds
 │   │   └── lib/            # i18n, query client, utils
 │   └── index.html
 ├── server/                 # Express server and API
@@ -113,7 +116,7 @@ npm start
 ### Staff & Projects
 
 - Data is stored in SQLite; schemas are defined in `shared/schema.ts`.
-- **Developers:** Age is computed from `birthDate` (ISO `YYYY-MM-DD`). API accepts `birthDate` on create/update but returns only `age` (never exposes birth date).
+- **Developers:** Age is computed from `birthDate` (ISO `YYYY-MM-DD`, stored as `birth_date` in SQLite). Create/update (`POST`/`PUT`) accept optional `birthDate` in the JSON body. Public `GET` responses include only `age`; authenticated reads (`GET` with valid `X-API-Key`) also include `birthDate`. Create/update responses always return `birthDate` when set.
 - API endpoints (see `server/routes.ts`):
   - `GET /api/developers` – list all developers (staff members).
   - `GET /api/developers/:endpoint` – developer details.
@@ -133,6 +136,20 @@ npm start
 ### News / Articles
 
 - **Hybrid storage:** Metadata (title, summary, banner, author, tags, publishedAt) in SQLite; content in Markdown files at `data/articles/{id}/ru.md` and `data/articles/{id}/en.md`.
+- **`author`** – optional string: the developer `endpoint` (same as in `/api/developers`). Not stored as a nested object and no separate avatar URL in the article payload. The UI loads the author photo from `GET /api/staff/{author}/photo/1`.
+- Example create body (with API key):
+
+  ```json
+  {
+    "title": { "ru": "…", "en": "…" },
+    "summary": { "ru": "…", "en": "…" },
+    "content": { "ru": "…", "en": "…" },
+    "bannerUrl": "/uploads/…",
+    "tags": ["demo"],
+    "author": "test-developer"
+  }
+  ```
+
 - API endpoints:
   - `GET /api/news` – list sorted by `published_at DESC` (content omitted; search matches title, summary, tags only).
   - `GET /api/news/:id` – single article with full content from files.
@@ -152,12 +169,12 @@ npm run dev
 # In another terminal: create test data
 npm run dev:create-test-developer   # Creates developer "test-developer"
 npm run dev:create-test-project    # Creates project "test-project" (links to test-developer)
-npm run dev:create-test-article     # Creates article with TEST.png banner, author ovcharenski
+npm run dev:create-test-article     # Creates article with TEST.png banner, author test-developer
 ```
 
 - `dev:create-test-developer` – creates a test developer and uploads 3 photos (1–3) from `data/test/TEST.png` via API.
 - `dev:create-test-project` – creates a test project and uploads picture from `data/TEST.png` via API (run after developer if you want the link).
-- `dev:create-test-article` – creates a demo article from `data/test/` (TEST.png banner, RU.md and EN.md content).
+- `dev:create-test-article` – creates a demo article from `data/test/` (TEST.png banner, RU.md and EN.md content, `author: "test-developer"` — run `dev:create-test-developer` first so the author photo exists).
 - Ensure `data/test/TEST.png`, `data/test/RU.md`, and `data/test/EN.md` exist before running.
 
 #### Migrating existing articles to Markdown
@@ -169,6 +186,23 @@ npm run migrate:articles-to-markdown
 ```
 
 This moves content from `content_json` to `data/articles/{id}/ru.md` and `en.md`.
+
+---
+
+## 🖼 Image Zoom (Frontend)
+
+Zoom is implemented in `ImageLightbox` and `ZoomableImage` / `ZoomableBackground`.
+
+| Location | Zoom |
+|----------|------|
+| Developer profile (polaroid fan, mobile photo) | Yes — polaroid frame in lightbox, square crop (`object-cover`) |
+| Project detail hero | Yes |
+| Article banner & inline markdown images | Yes |
+| News list banners | No — click opens article |
+| Staff / project grid mini-cards | No — click navigates to detail page |
+| Article author avatar | No — loaded from `/api/staff/{author}/photo/1` when `author` is set |
+
+**Controls:** click image to open; scroll, +/- buttons, or two-finger pinch to zoom; drag/pan when zoomed; double-click toggles 2×; click dark backdrop or empty area to close. Zoom toolbar is centered at the bottom; close (×) is top-right.
 
 ---
 

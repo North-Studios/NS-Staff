@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { CountryFlag } from '@/lib/countryFlags';
 import { getLocalizedValue } from '@/lib/utils';
-
 interface StaffCardProps {
   staff: StaffMember;
   size?: 'small' | 'large';
@@ -54,7 +53,7 @@ export function StaffCard({ staff, size = 'small' }: StaffCardProps) {
         data-testid={`card-staff-${staff.endpoint}`}
       >
         <div className="absolute inset-0 p-6 flex flex-col justify-end">
-          <div 
+          <div
             className="absolute inset-0 opacity-20 bg-cover bg-center transition-opacity duration-300 group-hover:opacity-30"
             style={{ backgroundImage: `url(/api/staff/${staff.endpoint}/photo/1)` }}
           />

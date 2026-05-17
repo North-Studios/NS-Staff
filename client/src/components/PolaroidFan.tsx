@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { ZoomableImage } from '@/components/ZoomableImage';
 
 interface PolaroidFanProps {
   staffEndpoint: string;
@@ -63,10 +64,12 @@ export function PolaroidFan({ staffEndpoint, photoCount = 3 }: PolaroidFanProps)
         >
           <div className="bg-white dark:!bg-white p-4 pb-16">
             <div className="aspect-square bg-white dark:!bg-white overflow-hidden">
-              <img
+              <ZoomableImage
                 src={`/api/staff/${staffEndpoint}/photo/${photoNum}`}
                 alt={`Photo ${photoNum}`}
+                variant="polaroid"
                 className="w-full h-full object-cover"
+                wrapperClassName="w-full h-full"
                 data-testid={`img-staff-photo-${staffEndpoint}-${photoNum}`}
               />
             </div>

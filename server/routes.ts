@@ -52,6 +52,13 @@ function resolveBaseUrl(req: Request): string {
   return `${protocol}://${host}`;
 }
 
+function hasValidApiKey(req: Request): boolean {
+  const expected = process.env.API_KEY;
+  if (!expected) return false;
+  const provided = getApiKeyFromRequest(req);
+  return !!provided && provided === expected;
+}
+
 function requireApiKey(req: Request, res: Response, next: NextFunction) {
   const expected = process.env.API_KEY;
   if (!expected) {
@@ -251,9 +258,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // New API: developers
   //
 
-  app.get('/api/developers', async (_req, res) => {
+  app.get('/api/developers', async (req, res) => {
     try {
-      const staff = await storage.getAllStaff();
+      const staff = await storage.getAllStaff({ includeBirthDate: hasValidApiKey(req) });
       res.json(staff);
     } catch (error) {
       console.error('Error fetching developers:', error);
@@ -264,7 +271,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/developers/:endpoint', async (req, res) => {
     try {
       const { endpoint } = req.params;
-      const staff = await storage.getStaffByEndpoint(endpoint);
+      const staff = await storage.getStaffByEndpoint(endpoint, {
+        includeBirthDate: hasValidApiKey(req),
+      });
       
       if (!staff) {
         return res.status(404).json({ error: 'Developer not found' });
@@ -311,7 +320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         now,
       );
 
-      const created = await storage.getStaffByEndpoint(body.endpoint);
+      const created = await storage.getStaffByEndpoint(body.endpoint, { includeBirthDate: true });
       res.status(201).json(created);
     } catch (error: any) {
       if (error && error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
@@ -345,7 +354,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         projects: body.projects ?? existing.projects,
       };
 
-      // Preserve birth_date when not in body (API never returns it for privacy)
       const birthDateToSet = body.birthDate !== undefined
         ? (body.birthDate ?? null)
         : (db.prepare("SELECT birth_date FROM developers WHERE endpoint = ?").get(endpoint) as { birth_date: string | null } | undefined)?.birth_date ?? null;
@@ -372,7 +380,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         endpoint,
       );
 
-      const updated = await storage.getStaffByEndpoint(endpoint);
+      const updated = await storage.getStaffByEndpoint(endpoint, { includeBirthDate: true });
       res.json(updated);
     } catch (error) {
       console.error('Error updating developer:', error);
@@ -592,17 +600,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       db.prepare(
         `INSERT INTO news (
           id, title_json, summary_json, content_json, banner_url,
-          author_endpoint, author_avatar_url,
+          author_endpoint,
           tags_json, published_at, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       ).run(
         id,
         JSON.stringify(body.title),
         JSON.stringify(body.summary ?? {}),
         '{}',
         body.bannerUrl ?? null,
-        author?.endpoint ?? null,
-        author?.avatarUrl ?? null,
+        author ?? null,
         JSON.stringify(body.tags ?? []),
         publishedAt,
         nowIso,
@@ -660,7 +667,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       db.prepare(
         `UPDATE news
          SET title_json = ?, summary_json = ?, content_json = ?, banner_url = ?,
-             author_endpoint = ?, author_avatar_url = ?,
+             author_endpoint = ?,
              tags_json = ?, published_at = ?, updated_at = ?
          WHERE id = ?`,
       ).run(
@@ -668,8 +675,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         JSON.stringify(merged.summary),
         '{}',
         merged.bannerUrl ?? null,
-        merged.author?.endpoint ?? null,
-        merged.author?.avatarUrl ?? null,
+        merged.author ?? null,
         JSON.stringify(merged.tags),
         merged.publishedAt,
         nowIso,
@@ -927,12 +933,7 @@ function rowToArticle(row: any): Article {
     bannerUrl: row.banner_url ?? undefined,
     publishedAt: row.published_at,
     tags: safeParseJsonArray(row.tags_json),
-    author: row.author_endpoint
-      ? {
-          endpoint: row.author_endpoint,
-          avatarUrl: row.author_avatar_url ?? undefined,
-        }
-      : undefined,
+    author: row.author_endpoint ?? undefined,
   };
 }
 

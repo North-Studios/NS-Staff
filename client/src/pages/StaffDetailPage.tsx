@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { MarkdownContent } from '@/components/MarkdownContent';
+import { ZoomableImage } from '@/components/ZoomableImage';
 
 export default function StaffDetailPage() {
   const [, params] = useRoute('/developers/:endpoint');
@@ -87,10 +88,12 @@ export default function StaffDetailPage() {
                 data-testid="polaroid-mobile"
               >
                 <div className="aspect-square bg-white dark:!bg-white overflow-hidden">
-                  <img
+                  <ZoomableImage
                     src={`/api/staff/${staff.endpoint}/photo/1`}
                     alt="Profile"
+                    variant="polaroid"
                     className="w-full h-full object-cover"
+                    wrapperClassName="w-full h-full"
                     data-testid={`img-staff-photo-mobile-${staff.endpoint}`}
                   />
                 </div>

@@ -9,7 +9,8 @@ export const staffMemberSchema = z.object({
   // to simple "ru" / "en" keys when moving to SQL.
   name: z.record(z.string()),
   nicknames: z.array(z.string()),
-  age: z.number().optional(), // computed from birth_date, never expose birthDate in API
+  age: z.number().optional(), // computed from birth_date
+  birthDate: z.string().optional(), // ISO date (YYYY-MM-DD); returned only with valid API key on GET
   country: z.string(),
   languages: z.array(z.string()),
   post: z.string(),
@@ -61,12 +62,7 @@ export const articleSchema = z.object({
   bannerUrl: z.string().optional(),
   publishedAt: z.string(), // ISO string
   tags: z.array(z.string()),
-  author: z
-    .object({
-      endpoint: z.string(),
-      avatarUrl: z.string().optional(),
-    })
-    .optional(),
+  author: z.string().optional(),
 });
 
 export type Article = z.infer<typeof articleSchema>;

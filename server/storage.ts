@@ -14,9 +14,11 @@ const __dirname = dirname(__filename);
 // В production: dist/server/../data (dist/data)
 const DATA_DIR = path.join(__dirname, "..", "data");
 
+export type StaffQueryOptions = { includeBirthDate?: boolean };
+
 export interface IStorage {
-  getAllStaff(): Promise<StaffMember[]>;
-  getStaffByEndpoint(endpoint: string): Promise<StaffMember | undefined>;
+  getAllStaff(options?: StaffQueryOptions): Promise<StaffMember[]>;
+  getStaffByEndpoint(endpoint: string, options?: StaffQueryOptions): Promise<StaffMember | undefined>;
   getAllProjects(): Promise<Project[]>;
   getProjectByEndpoint(endpoint: string): Promise<Project | undefined>;
   getStaffPhotoPath(endpoint: string, photoNum: number): string;
@@ -25,7 +27,7 @@ export interface IStorage {
 }
 
 class SqliteStorage implements IStorage {
-  async getAllStaff(): Promise<StaffMember[]> {
+  async getAllStaff(options?: StaffQueryOptions): Promise<StaffMember[]> {
     const rows = db
       .prepare(
         `SELECT id, endpoint, name_json, nicknames_json, birth_date, country, languages_json,
@@ -35,10 +37,13 @@ class SqliteStorage implements IStorage {
       )
       .all() as any[];
 
-    return rows.map((row) => this.rowToStaff(row));
+    return rows.map((row) => this.rowToStaff(row, options));
   }
 
-  async getStaffByEndpoint(endpoint: string): Promise<StaffMember | undefined> {
+  async getStaffByEndpoint(
+    endpoint: string,
+    options?: StaffQueryOptions,
+  ): Promise<StaffMember | undefined> {
     const row = db
       .prepare(
         `SELECT id, endpoint, name_json, nicknames_json, birth_date, country, languages_json,
@@ -49,7 +54,7 @@ class SqliteStorage implements IStorage {
       .get(endpoint) as any | undefined;
 
     if (!row) return undefined;
-    return this.rowToStaff(row);
+    return this.rowToStaff(row, options);
   }
 
   async getAllProjects(): Promise<Project[]> {
@@ -114,21 +119,16 @@ class SqliteStorage implements IStorage {
       bannerUrl: row.banner_url ?? undefined,
       publishedAt: row.published_at,
       tags: safeParseJsonArray(row.tags_json),
-      author: row.author_endpoint
-        ? {
-            endpoint: row.author_endpoint,
-            avatarUrl: row.author_avatar_url ?? undefined,
-          }
-        : undefined,
+      author: row.author_endpoint ?? undefined,
     };
   }
 
-  private rowToStaff(row: any): StaffMember {
+  private rowToStaff(row: any, options?: StaffQueryOptions): StaffMember {
     const endpoint = row.endpoint;
     const projects = this.getProjectsForDeveloper(endpoint);
     const birthDate = row.birth_date ?? undefined;
     const age = birthDate ? getAgeFromBirthDate(birthDate) : null;
-    return {
+    const member: StaffMember = {
       id: row.id,
       endpoint,
       name: safeParseJsonRecord(row.name_json),
@@ -142,6 +142,10 @@ class SqliteStorage implements IStorage {
       projects,
       colors: undefined as any, // legacy field not used with unified design
     };
+    if (options?.includeBirthDate && birthDate) {
+      member.birthDate = birthDate;
+    }
+    return member;
   }
 
   private getProjectsForDeveloper(developerEndpoint: string): string[] {

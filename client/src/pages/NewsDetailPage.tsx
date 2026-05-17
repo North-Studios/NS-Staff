@@ -10,6 +10,7 @@ import { MarkdownContent } from '@/components/MarkdownContent';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'wouter';
 import NotFound from '@/pages/not-found';
+import { ZoomableImage } from '@/components/ZoomableImage';
 
 export default function NewsDetailPage() {
   const [, params] = useRoute('/news/:id');
@@ -38,7 +39,7 @@ export default function NewsDetailPage() {
 
   const content = getLocalizedValue(article.content, i18n.language);
   const published = formatPublishedAt(article.publishedAt, i18n.language);
-  const authorEndpoint = article.author?.endpoint;
+  const authorEndpoint = article.author;
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,13 +49,12 @@ export default function NewsDetailPage() {
         <article className="max-w-4xl mx-auto space-y-10">
           {/* Banner */}
           {article.bannerUrl && (
-            <div className="w-full aspect-video rounded-2xl overflow-hidden bg-muted">
-              <img
-                src={article.bannerUrl}
-                alt={title}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <ZoomableImage
+              src={article.bannerUrl}
+              alt={title}
+              wrapperClassName="aspect-video w-full overflow-hidden rounded-2xl bg-muted"
+              className="h-full w-full object-cover"
+            />
           )}
 
           {/* Header */}
@@ -67,11 +67,11 @@ export default function NewsDetailPage() {
               <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                 {/* Author */}
                 <div className="flex items-center gap-2">
-                  {article.author?.avatarUrl ? (
+                  {authorEndpoint ? (
                     <img
-                      src={article.author.avatarUrl}
+                      src={`/api/staff/${authorEndpoint}/photo/1`}
                       alt={authorEndpoint}
-                      className="w-8 h-8 rounded-full object-cover"
+                      className="h-8 w-8 shrink-0 rounded-full object-cover"
                     />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">

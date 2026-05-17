@@ -9,7 +9,6 @@ import { Link, useLocation } from 'wouter';
 import { Badge } from '@/components/ui/badge';
 import { SearchInput } from '@/components/SearchInput';
 import { useEffect } from 'react';
-
 export default function NewsListPage() {
   const { t, i18n } = useTranslation('common');
   const [, setLocation] = useLocation();
@@ -93,7 +92,7 @@ export default function NewsListPage() {
                 const title = getLocalizedValue(article.title, i18n.language);
                 const summary = getLocalizedValue(article.summary, i18n.language);
                 const published = formatPublishedAt(article.publishedAt, i18n.language);
-                const authorEndpoint = article.author?.endpoint;
+                const authorEndpoint = article.author;
 
                 return (
                   <Link
@@ -107,7 +106,7 @@ export default function NewsListPage() {
                           <img
                             src={article.bannerUrl}
                             alt={title}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                         </div>
                       )}

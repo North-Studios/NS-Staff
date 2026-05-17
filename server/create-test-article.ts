@@ -33,18 +33,13 @@ async function main() {
     en: readFileSync(EN_MD, "utf-8"),
   };
 
-  const avatarUrl = `/api/staff/${endpoint}/photo/1`;
-
   const body = {
     title,
     summary,
     content,
     bannerUrl,
     tags: ["test", "demo"],
-    author: {
-      endpoint,
-      avatarUrl,
-    },
+    author: endpoint,
   };
 
   const result = await apiPost<{ id: string }>("/api/news", body);
@@ -59,8 +54,8 @@ async function main() {
   console.log("Created test article:");
   console.log(`  id: ${id}`);
   console.log(`  GET ${API_BASE}/api/news/${id}`);
-  console.log(`  Author endpoint: ${endpoint}`);
-  console.log(`  Author avatarUrl: ${avatarUrl}`);
+  console.log(`  Author: ${endpoint}`);
+  console.log(`  Author photo: /api/staff/${endpoint}/photo/1`);
   console.log(`  Banner URL: ${bannerUrl}`);
   console.log("");
   console.log("Открой в браузере:");

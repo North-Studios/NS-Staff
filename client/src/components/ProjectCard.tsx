@@ -5,6 +5,7 @@ import { getLocalizedValue } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MarkdownContent } from '@/components/MarkdownContent';
+import { ZoomableBackground } from '@/components/ZoomableImage';
 
 interface ProjectCardProps {
   project: Project;
@@ -29,13 +30,12 @@ export function ProjectCard({ project, size = 'small', accentColor = '#9e9e9e' }
         data-testid={`card-project-large-${project.endpoint}`}
       >
         <div className="flex items-start gap-4">
-          <div 
-            className="w-20 h-20 rounded-lg bg-cover bg-center flex-shrink-0"
-            style={{ 
-              backgroundImage: `url(/api/projects/${project.endpoint}/picture)`,
-              backgroundColor: `${accentColor}20`
-            }}
-            data-testid={`img-project-picture-${project.endpoint}`}
+          <ZoomableBackground
+            src={`/api/projects/${project.endpoint}/picture`}
+            alt={project.name}
+            className="h-20 w-20 shrink-0 rounded-lg bg-cover bg-center"
+            style={{ backgroundColor: `${accentColor}20` }}
+            testId={`img-project-picture-${project.endpoint}`}
           />
           <div className="flex-1 min-w-0">
             <h3 className="font-display font-semibold text-xl mb-2" data-testid={`text-project-name-${project.endpoint}`}>{project.name}</h3>
@@ -69,11 +69,11 @@ export function ProjectCard({ project, size = 'small', accentColor = '#9e9e9e' }
         data-testid={`card-project-${project.endpoint}`}
       >
         <div className="absolute inset-0">
-          <div 
+          <div
             className="absolute inset-0 opacity-20 bg-cover bg-center transition-opacity duration-300 group-hover:opacity-40"
-            style={{ 
+            style={{
               backgroundImage: `url(/api/projects/${project.endpoint}/picture)`,
-              backgroundColor: `${accentColor}20`
+              backgroundColor: `${accentColor}20`,
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />

@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import { getLocalizedValue } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { MarkdownContent } from '@/components/MarkdownContent';
+import { ZoomableBackground } from '@/components/ZoomableImage';
 
 export default function ProjectDetailPage() {
   const [, params] = useRoute('/projects/:endpoint');
@@ -49,14 +50,11 @@ export default function ProjectDetailPage() {
       <main className="pt-24 pb-20 px-6">
         <div className="max-w-5xl mx-auto space-y-12">
           {/* Hero Image */}
-          <div 
-            className="w-full aspect-video rounded-2xl bg-card overflow-hidden"
-            style={{
-              backgroundImage: `url(/api/projects/${project.endpoint}/picture)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-            data-testid={`img-project-hero-${project.endpoint}`}
+          <ZoomableBackground
+            src={`/api/projects/${project.endpoint}/picture`}
+            alt={project.name}
+            className="aspect-video w-full overflow-hidden rounded-2xl bg-card bg-cover bg-center"
+            testId={`img-project-hero-${project.endpoint}`}
           />
 
           {/* Project Info */}

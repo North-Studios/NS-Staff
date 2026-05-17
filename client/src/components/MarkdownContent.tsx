@@ -1,6 +1,7 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { cn } from '@/lib/utils';
+import { ZoomableImage } from '@/components/ZoomableImage';
 import type { Components } from 'react-markdown';
 
 interface MarkdownContentProps {
@@ -72,6 +73,14 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
     td: ({ children }) => (
       <td className="border border-border px-4 py-2">{children}</td>
     ),
+    img: ({ src, alt }) =>
+      src ? (
+        <ZoomableImage
+          src={src}
+          alt={alt ?? ''}
+          className="my-4 h-auto max-w-full rounded-lg"
+        />
+      ) : null,
   };
 
   return (
