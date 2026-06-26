@@ -8,7 +8,8 @@ import { PolaroidFan } from '@/components/PolaroidFan';
 import { ProjectCard } from '@/components/ProjectCard';
 import { CountryFlag, LanguageFlag } from '@/lib/countryFlags';
 import type { StaffMember, Project } from '@shared/schema';
-import { Loader2, Mail, Send, Github, Twitter, Key } from 'lucide-react';
+import { Loader2, Mail, Send, Key } from "lucide-react";
+import { GithubIcon, XIcon } from '@/components/icons';
 import {
   Accordion,
   AccordionContent,
@@ -58,7 +59,6 @@ export default function StaffDetailPage() {
   const staffProjects =
     allProjects?.filter((p) => p.developers.includes(staff.endpoint)) || [];
 
-  // QR download removed per requirements
 
   const bgColor = '#28735d';
 
@@ -186,7 +186,7 @@ export default function StaffDetailPage() {
                           )}
                           {staff.contacts.github && (
                             <div className="flex items-center gap-3 text-sm">
-                              <Github className="w-4 h-4 text-muted-foreground" />
+                              <GithubIcon className="w-4 h-4 text-muted-foreground" />
                               <a href={staff.contacts.github} target="_blank" rel="noopener noreferrer" className="hover:underline" data-testid={`contact-github-${staff.endpoint}`}>
                                 {t('contacts.github')}
                               </a>
@@ -194,7 +194,7 @@ export default function StaffDetailPage() {
                           )}
                           {staff.contacts.x && (
                             <div className="flex items-center gap-3 text-sm">
-                              <Twitter className="w-4 h-4 text-muted-foreground" />
+                              <XIcon className="w-4 h-4 text-muted-foreground" />
                               <a
                                 href={staff.contacts.x}
                                 target="_blank"
@@ -227,7 +227,6 @@ export default function StaffDetailPage() {
                 </div>
               )}
 
-              {/* QR Download Button removed */}
             </div>
           </div>
 

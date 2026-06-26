@@ -9,7 +9,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import type { StaffMember } from '@shared/schema';
-import { Mail, Send, Github, Twitter, Key, Menu } from 'lucide-react';
+import { Mail, Send, Key, Menu } from 'lucide-react';
+import { GithubIcon, XIcon} from '@/components/icons';
 import {
   Sheet,
   SheetContent,
@@ -104,7 +105,7 @@ export function Header({ staff, showCompanyDates }: HeaderProps) {
                     )}
                     {siteX && (
                       <div className="flex items-center gap-2">
-                        <Twitter className="w-4 h-4 text-muted-foreground" />
+                        <XIcon className="w-4 h-4 text-muted-foreground" />
                         <a
                           href={siteX}
                           target="_blank"
@@ -161,7 +162,7 @@ export function Header({ staff, showCompanyDates }: HeaderProps) {
                   )}
                   {staff.contacts.github && (
                     <div className="flex items-center gap-2 text-sm">
-                      <Github className="w-4 h-4 text-muted-foreground" />
+                      <GithubIcon className="w-4 h-4 text-muted-foreground" />
                       <a
                         href={staff.contacts.github}
                         target="_blank"
@@ -175,7 +176,7 @@ export function Header({ staff, showCompanyDates }: HeaderProps) {
                   )}
                   {staff.contacts.x && (
                     <div className="flex items-center gap-2 text-sm">
-                      <Twitter className="w-4 h-4 text-muted-foreground" />
+                      <XIcon className="w-4 h-4 text-muted-foreground" />
                       <a
                         href={staff.contacts.x}
                         target="_blank"
@@ -340,7 +341,7 @@ export function Header({ staff, showCompanyDates }: HeaderProps) {
                       )}
                       {siteX && (
                         <div className="flex items-center gap-2">
-                          <Twitter className="w-4 h-4 text-muted-foreground" />
+                          <XIcon className="w-4 h-4 text-muted-foreground" />
                           <a
                             href={siteX}
                             target="_blank"
