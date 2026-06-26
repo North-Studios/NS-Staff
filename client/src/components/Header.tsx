@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/tooltip';
 import type { StaffMember } from '@shared/schema';
 import { Mail, Send, Key, Menu } from 'lucide-react';
-import { GithubIcon, XIcon} from '@/components/icons';
+import { GithubIcon, XIcon} from '@/components/Icons';
 import {
   Sheet,
   SheetContent,

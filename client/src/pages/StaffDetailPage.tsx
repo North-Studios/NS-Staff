@@ -9,7 +9,7 @@ import { ProjectCard } from '@/components/ProjectCard';
 import { CountryFlag, LanguageFlag } from '@/lib/countryFlags';
 import type { StaffMember, Project } from '@shared/schema';
 import { Loader2, Mail, Send, Key } from "lucide-react";
-import { GithubIcon, XIcon } from '@/components/icons';
+import { GithubIcon, XIcon } from '@/components/Icons';
 import {
   Accordion,
   AccordionContent,
