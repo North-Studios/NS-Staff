@@ -5,7 +5,17 @@
 
 version: 2
 updates:
-  - package-ecosystem: "" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "npm"  # <- ИЗМЕНЕНО: было пусто
+    directory: "/"            # Location of package manifests
     schedule:
       interval: "weekly"
+    # Дополнительные полезные настройки для npm:
+    versioning-strategy: "auto"
+    commit-message:
+      prefix: "fix(deps)"
+      prefix-development: "chore(deps-dev)"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
