@@ -90,7 +90,7 @@
     "zod-validation-error": "^5.0.0"
   },
   "devDependencies": {
-    "@replit/vite-plugin-cartographer": "^0.6.0",
+    "@replit/vite-plugin-cartographer": "^0.6.1",
     "@replit/vite-plugin-dev-banner": "^0.1.2",
     "@replit/vite-plugin-runtime-error-modal": "^0.0.6",
     "@tailwindcss/typography": "^0.5.20",
@@ -107,12 +107,12 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@types/ws": "^8.18.1",
-    "@vitejs/plugin-react": "^6.0.3",
+    "@vitejs/plugin-react": "^6.0.4",
     "autoprefixer": "^10.5.4",
     "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.10",
     "esbuild": "^0.28.1",
-    "postcss": "^8.5.19",
+    "postcss": "^8.5.23",
     "tailwindcss": "^4.3.2",
     "tsx": "^4.23.1",
     "typescript": "7.0.2",
