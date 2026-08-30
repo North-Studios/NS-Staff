@@ -58,6 +58,8 @@ export default function StaffDetailPage() {
   const staffProjects =
     allProjects?.filter((p) => p.developers.includes(staff.endpoint)) || [];
 
+  // QR download removed per requirements
+
   const bgColor = '#28735d';
 
   return (
@@ -224,6 +226,8 @@ export default function StaffDetailPage() {
                   </Accordion>
                 </div>
               )}
+
+              {/* QR Download Button removed */}
             </div>
           </div>
 
