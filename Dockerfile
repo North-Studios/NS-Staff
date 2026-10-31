@@ -7,8 +7,6 @@ COPY package*.json tsconfig.json vite.config.ts ./
 RUN npm ci
 COPY . .
 RUN npm run build
-RUN npm prune --omit=dev
-
 FROM node:20-bookworm-slim AS runner
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libcairo2 libpango-1.0-0 libjpeg62-turbo libgif7 librsvg2-2 \
