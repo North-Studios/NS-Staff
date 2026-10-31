@@ -1,5 +1,7 @@
-FROM node:20-alpine AS builder
-RUN apk add --no-cache python3 make g++ cairo-dev pango-dev jpeg-dev giflib-dev librsvg-dev
+FROM node:20-bookworm-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 make g++ libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY package*.json tsconfig.json vite.config.ts ./
 RUN npm ci
@@ -7,8 +9,10 @@ COPY . .
 RUN npm run build
 RUN npm prune --omit=dev
 
-FROM node:20-alpine AS runner
-RUN apk add --no-cache cairo pango jpeg giflib librsvg
+FROM node:20-bookworm-slim AS runner
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcairo2 libpango-1.0-0 libjpeg62-turbo libgif7 librsvg2-2 \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=5784
