@@ -20,6 +20,7 @@ import {
   getProjectMetadata,
 } from "./embeds";
 import { log } from "./vite";
+import packageJson from "../package.json";
 
 function getApiKeyFromRequest(req: Request): string | null {
   const header = req.header("X-API-Key");
@@ -878,25 +879,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get('/api/health', async (_req, res) => {
-    try {
-      // Read version from package.json
-      const pkgPath = path.join(process.cwd(), "package.json");
-      const pkgRaw = await fs.readFile(pkgPath, "utf-8");
-      const pkg = JSON.parse(pkgRaw) as { version?: string };
-
-      res.json({
-        status: "healthy",
-        timestamp: Math.floor(Date.now() / 1000),
-        version: pkg.version ?? "unknown",
-      });
-    } catch (error) {
-      console.error("Error in /api/health:", error);
-      res.status(500).json({
-        status: "unhealthy",
-        timestamp: Math.floor(Date.now() / 1000),
-        version: "unknown",
-      });
-    }
+    res.json({
+      status: "healthy",
+      timestamp: Math.floor(Date.now() / 1000),
+      version: packageJson.version ?? "unknown",
+    });
   });
 
   const httpServer = createServer(app);
